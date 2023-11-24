@@ -1,5 +1,7 @@
 # info-weather
-A project to get weather conditions for a certain city
+A project to get weather conditions for a certain city.  
+Stack: Python, Django, DRF, PostgeSQL, Docker, Linters&formatter.
+
 
 ## Start a new project:
 
