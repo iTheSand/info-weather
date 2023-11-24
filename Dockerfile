@@ -1,4 +1,4 @@
-FROM ithesand/python:3.8-slim-bullseye-mp
+FROM ithesand/python:3.8-slim-bullseye-emp
 
 WORKDIR /usr/src/app
 
