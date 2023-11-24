@@ -1,0 +1,42 @@
+version: "3.2"
+
+services:
+  django_app:
+    container_name: django-app
+    build: .
+    image: django_app
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8080
+    volumes:
+      - ".:/usr/src/app"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - django-db
+    networks:
+      - poi_network
+    env_file:
+      - .env
+
+  django-db:
+    container_name: weather-django-db
+    image: ithesand/postgres:15.1-alpine-mp
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - poi_network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: weather
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.209.0.1/16
+
+  poi_network:
