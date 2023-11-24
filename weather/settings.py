@@ -18,8 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ENV = os.environ.get("ENV", "dev")
 
 DEBUG = True
+
 ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 
+YANDEX_KEY = os.environ.get("YANDEX_KEY", Faker().pystr())
 SECRET_KEY = os.environ.get("SECRET_KEY", Faker().pystr())
 
 INSTALLED_APPS = [

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.core.models import City
+from apps.core.models import City, WeatherFact
 
 
 class FirstLetterFilter(admin.SimpleListFilter):
@@ -23,3 +23,17 @@ class CityAdmin(admin.ModelAdmin):
     ordering = ("name",)
     readonly_fields = ("created_at", "updated_at")
     list_filter = (FirstLetterFilter,)
+
+
+@admin.register(WeatherFact)
+class WeatherFactAdmin(admin.ModelAdmin):
+    list_display = (
+        "city",
+        "temp",
+        "pressure_mm",
+        "wind_speed",
+        "created_at",
+        "updated_at",
+    )
+    ordering = ("city",)
+    readonly_fields = ("created_at", "updated_at")
