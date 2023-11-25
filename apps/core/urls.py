@@ -6,7 +6,7 @@ from apps.core.views import WeatherFactView
 
 app_name = "core"
 
-urlpatterns = [path("weather/", WeatherFactView.as_view(), name="weather")]
+urlpatterns = [path("weather", WeatherFactView.as_view(), name="weather")]
 
 urlpatterns.extend(
     [

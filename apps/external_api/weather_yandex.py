@@ -12,14 +12,15 @@ def get_weather(lat=None, lon=None):
         f"https://api.weather.yandex.ru/v2/forecast?lat={lat}&lon={lon}",
         headers={"X-Yandex-API-Key": settings.YANDEX_KEY},
     )
+    response_body = response.json()
 
     logger.info(
         {
             "Get weather request": {
                 "response_status_code": response.status_code,
-                "response_body": response.json(),
+                "response_body": response_body,
             }
         }
     )
 
-    return response.json()
+    return response_body

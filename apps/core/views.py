@@ -1,4 +1,4 @@
-from datetime import timedelta
+import logging
 
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -9,7 +9,9 @@ from rest_framework.views import APIView
 from apps.core import docs
 from apps.core.models import City, WeatherFact
 from apps.core.serializers import WeatherFactSerializer
-from apps.external_api.yandex import get_weather
+from apps.external_api.weather_yandex import get_weather
+
+logger = logging.getLogger("django")
 
 
 @method_decorator(name="get", decorator=docs.WEATHER_FACT_VIEW_GET_SCHEMA)
@@ -22,10 +24,19 @@ class WeatherFactView(APIView):
         city = City.objects.filter(name=city_name).first()
 
         if not city:
-            return Response(f"{city_name} not found", status=HTTP_404_NOT_FOUND)
+            data = f"{city_name} not found"
+            logger.error(
+                {
+                    "Get weather fact request": {
+                        "response_status_code": HTTP_404_NOT_FOUND,
+                        "response_body": data,
+                    }
+                }
+            )
+            return Response(data, status=HTTP_404_NOT_FOUND)
 
         weather_fact = WeatherFact.objects.filter(
-            city=city, updated_at__gte=timezone.now() - timedelta(minutes=30)
+            city=city, updated_at__gte=timezone.now() - timezone.timedelta(minutes=30)
         ).first()
 
         if not weather_fact:
