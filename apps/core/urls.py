@@ -2,11 +2,14 @@ from django.conf.urls import url
 from django.urls import path
 
 from apps.core.swagger import SchemaView
-from apps.core.views import WeatherFactView
+from apps.core.views import WeatherFactView, WeatherForecastView
 
 app_name = "core"
 
-urlpatterns = [path("weather", WeatherFactView.as_view(), name="weather")]
+urlpatterns = [
+    path("weather", WeatherFactView.as_view(), name="weather"),
+    path("weather-forecast", WeatherForecastView.as_view(), name="weather-forecast"),
+]
 
 urlpatterns.extend(
     [
