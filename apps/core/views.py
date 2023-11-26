@@ -7,14 +7,18 @@ from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 
 from apps.core import docs
-from apps.core.models import City, WeatherFact
-from apps.core.serializers import WeatherFactSerializer
+from apps.core.models import City, WeatherFact, WeatherForecast
+from apps.core.serializers import (
+    ForecastPartSerializer,
+    WeatherFactSerializer,
+    WeatherForecastSerializer, ForecastPartsSerializer,
+)
 from apps.external_api.weather_yandex import get_weather
 
 logger = logging.getLogger("django")
 
 
-@method_decorator(name="get", decorator=docs.WEATHER_FACT_VIEW_GET_SCHEMA)
+@method_decorator(name="get", decorator=docs.WEATHER_FACT_OR_FORECAST_VIEW_GET_SCHEMA)
 class WeatherFactView(APIView):
     model = WeatherFact
     serializer_class = WeatherFactSerializer
@@ -35,13 +39,13 @@ class WeatherFactView(APIView):
             )
             return Response(data, status=HTTP_404_NOT_FOUND)
 
-        weather_fact = WeatherFact.objects.filter(
+        weather_fact = self.model.objects.filter(
             city=city, updated_at__gte=timezone.now() - timezone.timedelta(minutes=30)
         ).first()
 
         if not weather_fact:
             fact_data = get_weather(**city.coords).get("fact")
-            weather_fact, _ = WeatherFact.objects.update_or_create(
+            weather_fact, _ = self.model.objects.update_or_create(
                 city=city,
                 defaults={
                     "temp": fact_data["temp"],
@@ -51,3 +55,50 @@ class WeatherFactView(APIView):
             )
 
         return Response(self.serializer_class(weather_fact).data, status=HTTP_200_OK)
+
+
+@method_decorator(name="get", decorator=docs.WEATHER_FACT_OR_FORECAST_VIEW_GET_SCHEMA)
+class WeatherForecastView(APIView):
+    model = WeatherForecast
+
+    def get(self, request):
+        city_name = request.query_params.get("city").capitalize()
+        city = City.objects.filter(name=city_name).first()
+
+        if not city:
+            data = f"{city_name} not found"
+            logger.error(
+                {
+                    "Get weather forecast request": {
+                        "response_status_code": HTTP_404_NOT_FOUND,
+                        "response_body": data,
+                    }
+                }
+            )
+            return Response(data, status=HTTP_404_NOT_FOUND)
+
+        today = timezone.now().strftime("%Y-%m-%d")
+        weather_forecast = self.model.objects.filter(city=city, date=today).first()
+        if not weather_forecast:
+            forecasts_data = get_weather(**city.coords).get("forecasts")
+            for forecast_data in forecasts_data:
+                weather_forecast_serializer = WeatherForecastSerializer(
+                    data=forecast_data
+                )
+                weather_forecast_serializer.is_valid()
+                weather_forecast = weather_forecast_serializer.save(city=city)
+
+                forecast_part_serializer = ForecastPartSerializer(
+                    data=[
+                        {"part_name": key, **forecast_data["parts"][key]}
+                        for key in ("night", "morning", "day", "evening")
+                    ],
+                    many=True,
+                )
+
+                forecast_part_serializer.is_valid()
+                forecast_part_serializer.save(weather_forecast=weather_forecast)
+
+        return Response(
+            ForecastPartsSerializer(weather_forecast).data, status=HTTP_200_OK,
+        )
