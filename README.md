@@ -35,6 +35,10 @@ which can issue a weather forecast for the selected city.
 Instructions for local startup:
 
 ```
+docker-compose run --rm django_app /bin/bash
+```
+
+```
 python manage.py iforecaster_bot
 ```
 
@@ -42,6 +46,7 @@ python manage.py iforecaster_bot
 ## The project uses utilities to verify compliance with standards and code quality requirements:
 
 Instructions for local startup:
+
 ```
 docker-compose run --rm django_app /bin/bash
 ```
