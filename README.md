@@ -26,6 +26,12 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+A project is self-documented, 
+to view all the endpoints and their descriptions, go to the url:
+
+```
+http://localhost:8080/core/swagger/
+```
 
 ## Launching telegram bot:
 
