@@ -27,6 +27,18 @@ python manage.py migrate
 ```
 
 
+## Launching telegram bot:
+
+A project implements a telegram bot (t.me/iforecaster_bot), 
+which can issue a weather forecast for the selected city.
+
+Instructions for local startup:
+
+```
+python manage.py iforecaster_bot
+```
+
+
 ## The project uses utilities to verify compliance with standards and code quality requirements:
 
 Instructions for local startup:

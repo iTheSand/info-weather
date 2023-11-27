@@ -24,6 +24,8 @@ ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 YANDEX_KEY = os.environ.get("YANDEX_KEY", Faker().pystr())
 SECRET_KEY = "django-insecure-css*w2aian^$x=!uim3x%=b6%54jduql=gkn^g6p1)pw-#=@!0"
 
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", Faker().pystr())
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

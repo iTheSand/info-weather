@@ -10,11 +10,15 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class WeatherFactSerializer(serializers.ModelSerializer):
-    city = CitySerializer()
+    city_name = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_city_name(obj):
+        return obj.city.name
 
     class Meta:
         model = WeatherFact
-        fields = ("city", "temp", "pressure_mm", "wind_speed")
+        fields = ("city_name", "temp", "pressure_mm", "wind_speed")
 
 
 class WeatherForecastSerializer(serializers.ModelSerializer):
@@ -42,18 +46,18 @@ class ForecastPartSerializer(serializers.ModelSerializer):
 
 
 class ForecastPartsSerializer(serializers.ModelSerializer):
-    city = serializers.SerializerMethodField()
-    weather_forecast = serializers.SerializerMethodField()
+    city_name = serializers.SerializerMethodField()
+    forecast_date = serializers.SerializerMethodField()
     forecast_parts = ForecastPartSerializer(many=True)
 
     @staticmethod
-    def get_city(obj):
+    def get_city_name(obj):
         return obj.city.name
 
     @staticmethod
-    def get_weather_forecast(obj):
-        return WeatherForecastSerializer(obj).data
+    def get_forecast_date(obj):
+        return obj.date
 
     class Meta:
         model = WeatherForecast
-        fields = ("city", "weather_forecast", "forecast_parts")
+        fields = ("city_name", "forecast_date", "forecast_parts")
