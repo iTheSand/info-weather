@@ -78,9 +78,9 @@ class WeatherForecastView(APIView):
             )
             return Response(data, status=HTTP_404_NOT_FOUND)
 
-        today = timezone.now().strftime("%Y-%m-%d")
-        weather_forecast = self.model.objects.filter(city=city, date=today).first()
-        if not weather_forecast:
+        today_date = timezone.now().strftime("%Y-%m-%d")
+
+        if not self.model.objects.filter(city=city, date=today_date).exists():
             forecasts_data = get_weather(**city.coords).get("forecasts")
             for forecast_data in forecasts_data:
                 weather_forecast_serializer = WeatherForecastSerializer(
@@ -99,6 +99,8 @@ class WeatherForecastView(APIView):
 
                 forecast_part_serializer.is_valid()
                 forecast_part_serializer.save(weather_forecast=weather_forecast)
+
+        weather_forecast = self.model.objects.filter(city=city, date=today_date).first()
 
         return Response(
             ForecastPartsSerializer(weather_forecast).data, status=HTTP_200_OK
