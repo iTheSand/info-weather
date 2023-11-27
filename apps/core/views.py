@@ -10,8 +10,9 @@ from apps.core import docs
 from apps.core.models import City, WeatherFact, WeatherForecast
 from apps.core.serializers import (
     ForecastPartSerializer,
+    ForecastPartsSerializer,
     WeatherFactSerializer,
-    WeatherForecastSerializer, ForecastPartsSerializer,
+    WeatherForecastSerializer,
 )
 from apps.external_api.weather_yandex import get_weather
 
@@ -100,5 +101,5 @@ class WeatherForecastView(APIView):
                 forecast_part_serializer.save(weather_forecast=weather_forecast)
 
         return Response(
-            ForecastPartsSerializer(weather_forecast).data, status=HTTP_200_OK,
+            ForecastPartsSerializer(weather_forecast).data, status=HTTP_200_OK
         )

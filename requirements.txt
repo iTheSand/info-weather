@@ -13,3 +13,4 @@ factory-boy==3.2.1
 black==22.12.0
 isort==5.10.1
 nox==2022.11.21
+python-telegram-bot==12.2.0

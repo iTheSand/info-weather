@@ -13,13 +13,7 @@ class WeatherFactViewTestCase(APITestCase):
     @staticmethod
     def get_expected_data(city, weather_fact):
         return {
-            "city": {
-                "name": city.name,
-                "coords": city.coords,
-                "district": city.district,
-                "subject": city.subject,
-                "population": city.population,
-            },
+            "city_name": city.name,
             "temp": weather_fact.temp,
             "pressure_mm": weather_fact.pressure_mm,
             "wind_speed": weather_fact.wind_speed,
