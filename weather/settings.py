@@ -19,7 +19,7 @@ ENV = os.environ.get("ENV", "dev")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "django-app"]
 
 YANDEX_KEY = os.environ.get("YANDEX_KEY", Faker().pystr())
 SECRET_KEY = "django-insecure-css*w2aian^$x=!uim3x%=b6%54jduql=gkn^g6p1)pw-#=@!0"
@@ -89,7 +89,7 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SWAGGER_SETTINGS = {"LOGOUT_URL": "/admin/logout/"}
+SWAGGER_SETTINGS = {"LOGIN_URL": "/admin/login/", "LOGOUT_URL": "/admin/logout/"}
 
 DATABASES = {
     "default": {
