@@ -100,7 +100,7 @@ class WeatherForecastView(APIView):
                 forecast_part_serializer.is_valid()
                 forecast_part_serializer.save(weather_forecast=weather_forecast)
 
-        weather_forecast = self.model.objects.filter(city=city, date=today_date).first()
+        weather_forecast = self.model.objects.get(city=city, date=today_date)
 
         return Response(
             ForecastPartsSerializer(weather_forecast).data, status=HTTP_200_OK

@@ -33,8 +33,8 @@ class WeatherForecastFactory(DjangoModelFactory):
         model = WeatherForecast
 
     city = SubFactory(CityFactory)
-    date = timezone.now()
-    data_ts = timezone.now().timestamp()
+    date = timezone.now().strftime("%Y-%m-%d")
+    date_ts = timezone.now().timestamp()
 
 
 class ForecastPartFactory(DjangoModelFactory):

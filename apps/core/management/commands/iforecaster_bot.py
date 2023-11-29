@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from rest_framework.test import APIRequestFactory
+from requests import request
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     CallbackContext,
@@ -13,9 +13,8 @@ from telegram.ext import (
 from telegram.utils.request import Request
 
 from apps.core.utils import convert_json_to_str
-from apps.core.views import WeatherForecastView
 
-PATH, VIEW = "/core/weather", WeatherForecastView.as_view()
+INTERNAL_API_PATH = "http://django-app:8080/core/weather-forecast"
 
 
 class Command(BaseCommand):
@@ -38,17 +37,17 @@ class Command(BaseCommand):
     @staticmethod
     def give_forecast(update: Update, context: CallbackContext):
         city = update.message.text
+        response = request("GET", INTERNAL_API_PATH, params={"city": city})
 
-        response = VIEW(APIRequestFactory().get(PATH, {"city": city}))
         if response.status_code == 200:
-            update.message.reply_text(convert_json_to_str(response.data))
+            update.message.reply_text(convert_json_to_str(response.json()))
         else:
-            update.message.reply_text(response.data)
+            update.message.reply_text(response.json())
 
     def handle(self, *args, **kwargs):
-        request = Request(connect_timeout=0.5, read_timeout=1.0)
+        telegram_request = Request(connect_timeout=0.5, read_timeout=1.0)
 
-        bot = Bot(request=request, token=settings.TELEGRAM_TOKEN)
+        bot = Bot(request=telegram_request, token=settings.TELEGRAM_TOKEN)
         self.stdout.write(f"Bot started - {bot.get_me()}")
 
         updater = Updater(bot=bot, use_context=True)
