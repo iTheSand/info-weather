@@ -19,6 +19,12 @@ Get in to the django_app container Shell:
 docker-compose run --rm django_app /bin/bash
 ```
 
+Add to .env file your yandex-weather api key (test tariff):
+
+```
+sed -i '' 's/YANDEX_KEY = "fake-yandex-api-key"/YANDEX_KEY = "your-yandex-api-key"/g' .env
+```
+
 Make migrations:
 
 ```
@@ -38,14 +44,20 @@ http://localhost:8080/core/swagger/
 A project implements a telegram bot (t.me/iforecaster_bot), 
 which can issue a weather forecast for the selected city.
 
-Instructions for local startup:
 
+Add to .env file your telegram api key (test tariff):
+
+```
+sed -i '' 's/TELEGRAM_TOKEN = "fake-tg-bot-token"/TELEGRAM_TOKEN = "your-tg-bot-token"/g' .env
+```
+
+Instructions for local startup:
 ```
 docker-compose run --rm django_app /bin/bash
 ```
 
 ```
-python manage.py iforecaster_bot
+python manage.py telegram_bot
 ```
 
 
